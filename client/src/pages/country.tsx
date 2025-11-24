@@ -32,21 +32,17 @@ export default function CountryPage() {
 
   const getNumberMutation = useMutation({
     mutationFn: async () => {
-      const response = await apiRequest("POST", `/api/countries/${countryId}/use-number`, {});
-      console.log("Get number response:", response);
-      return response as { number: string };
+      return await apiRequest("POST", `/api/countries/${countryId}/use-number`, {});
     },
     onSuccess: (data: { number: string }) => {
-      console.log("Setting current number to:", data.number);
       setCurrentNumber(data.number);
       queryClient.invalidateQueries({ queryKey: ["/api/auth/me"] });
       queryClient.invalidateQueries({ queryKey: ["/api/countries", countryId] });
     },
     onError: (error: any) => {
-      console.error("Get number error:", error);
       toast({
         title: "Error",
-        description: error.response?.data?.message || error.message || "Failed to get number",
+        description: error.message || "Failed to get number",
         variant: "destructive",
       });
     },
@@ -54,7 +50,7 @@ export default function CountryPage() {
 
   const checkSmsMutation = useMutation({
     mutationFn: async () => {
-      return await apiRequest("POST", `/api/sms/check/${currentNumber}`, {}) as Promise<{ newMessages: number }>;
+      return await apiRequest("POST", `/api/sms/check/${currentNumber}`, {});
     },
     onSuccess: (data: { newMessages: number }) => {
       if (data.newMessages > 0) {
@@ -151,10 +147,7 @@ export default function CountryPage() {
                 <div className="text-center space-y-4">
                   <p className="text-muted-foreground">Click to get a number from {country?.name}</p>
                   <Button
-                    onClick={() => {
-                      console.log("Get Number button clicked, countryId:", countryId);
-                      getNumberMutation.mutate();
-                    }}
+                    onClick={() => getNumberMutation.mutate()}
                     disabled={getNumberMutation.isPending}
                     size="lg"
                     data-testid="button-get-number"
