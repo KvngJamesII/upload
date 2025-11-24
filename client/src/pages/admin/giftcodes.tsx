@@ -8,6 +8,16 @@ import { Gift, Trash2 } from "lucide-react";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
+interface GiftCodeData {
+  id: string;
+  code: string;
+  creditsAmount: number;
+  maxClaims: number;
+  claimedCount: number;
+  expiryDate: string;
+  isActive: boolean;
+}
+
 export function GiftCodesTab() {
   const [formData, setFormData] = useState({
     code: "",
@@ -16,7 +26,10 @@ export function GiftCodesTab() {
     expiryDate: "",
   });
 
-  const { data: giftcodes = [] } = useQuery({ queryKey: ["/api/admin/giftcodes"] });
+  const { data: giftcodes = [] } = useQuery<GiftCodeData[]>({ 
+    queryKey: ["/api/admin/giftcodes"],
+    retry: false,
+  });
   const { toast } = useToast();
 
   const createMutation = useMutation({

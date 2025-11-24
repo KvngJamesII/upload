@@ -9,7 +9,10 @@ import { useToast } from "@/hooks/use-toast";
 
 export function WalletTab() {
   const [creditPrice, setCreditPrice] = useState("1");
-  const { data: stats } = useQuery({ queryKey: ["/api/admin/wallet/stats"] });
+  const { data: stats = { totalTransactions: 0, totalPurchased: 0, creditPrice: 1 } } = useQuery<{ totalTransactions: number; totalPurchased: number; creditPrice: number }>({ 
+    queryKey: ["/api/admin/wallet/stats"],
+    retry: false,
+  });
   const { toast } = useToast();
 
   const pricingMutation = useMutation({

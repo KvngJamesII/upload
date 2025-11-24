@@ -28,14 +28,14 @@ export default function Admin() {
           </header>
           <main className="flex-1 overflow-auto p-6">
             <Switch>
-              <Route path="/admin" component={StatisticsTab} />
-              <Route path="/admin/numbers" component={NumbersTab} />
-              <Route path="/admin/api" component={ApiSettingsTab} />
-              <Route path="/admin/users" component={UsersTab} />
-              <Route path="/admin/notifications" component={NotificationsTab} />
-              <Route path="/admin/announcements" component={AnnouncementsTab} />
-              <Route path="/admin/wallet" component={WalletTab} />
               <Route path="/admin/giftcodes" component={GiftCodesTab} />
+              <Route path="/admin/wallet" component={WalletTab} />
+              <Route path="/admin/announcements" component={AnnouncementsTab} />
+              <Route path="/admin/notifications" component={NotificationsTab} />
+              <Route path="/admin/users" component={UsersTab} />
+              <Route path="/admin/api" component={ApiSettingsTab} />
+              <Route path="/admin/numbers" component={NumbersTab} />
+              <Route path="/admin" component={StatisticsTab} />
             </Switch>
           </main>
         </div>

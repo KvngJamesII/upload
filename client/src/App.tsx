@@ -96,8 +96,16 @@ function Router() {
         )}
       </Route>
       
-      {/* Admin Routes */}
-      <Route path="/admin*">
+      {/* Admin Routes - must come before 404 */}
+      <Route path="/admin/:rest*">
+        {() => (
+          <AuthWrapper>
+            <Admin />
+          </AuthWrapper>
+        )}
+      </Route>
+
+      <Route path="/admin">
         {() => (
           <AuthWrapper>
             <Admin />
