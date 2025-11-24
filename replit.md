@@ -146,3 +146,34 @@ Preferred communication style: Simple, everyday language.
 - esbuild for server bundling
 - Server runs on port determined by environment
 - Static assets served from dist/public in production
+
+## Recent Fixes & Features (Latest Session)
+
+### 1. Admin Panel Routing Fixed
+- Fixed wouter route patterns for nested admin routes
+- Routes now properly match `/admin` and `/admin/:rest*` for all sub-pages
+- Admin sidebar navigation now fully functional without 404 errors
+
+### 2. Notification Mark-as-Read Feature
+- Added endpoint: `POST /api/notifications/:id/read` to mark notifications as read
+- Updated header notification dropdown with click handlers
+- Badge disappears when user clicks notification to mark it as read
+- Visual indicator (red dot) shows unread notifications
+- Cache invalidation ensures badge updates immediately
+
+### 3. Admin Functionality Status
+All admin features are fully implemented and working:
+- **Announcements**: Create, Edit, Delete, Toggle Active (all working)
+- **Notifications**: Broadcast to all users (working)
+- **API Settings**: Save SMS panel API token (working)
+- **Wallet Management**: View stats, set credit pricing (working)
+- **Gift Codes**: Create codes with expiry/limits, user claims (working)
+- **User Management**: View users, ban/unban (working)
+- **Statistics**: Dashboard with usage analytics (working)
+- **Countries**: Upload numbers, manage pools (working)
+
+### Important Notes for Testing
+- To test admin functionality: **Log in as admin** (username: idledev, password: 200715)
+- All endpoints require admin authentication via `requireAdmin` middleware
+- Session-based authentication persists across navigation
+- Admin panel data auto-refreshes via React Query cache invalidation

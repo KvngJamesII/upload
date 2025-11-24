@@ -10,8 +10,9 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import type { User as UserType, Notification } from "@shared/schema";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 
 export function Header() {
   const { data: user } = useQuery<UserType>({ 
@@ -23,7 +24,22 @@ export function Header() {
     enabled: !!user,
   });
 
+  const markReadMutation = useMutation({
+    mutationFn: async (notificationId: string) => {
+      return apiRequest("POST", `/api/notifications/${notificationId}/read`, {});
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/notifications"] });
+    },
+  });
+
   const unreadCount = notifications?.filter((n) => !n.isRead).length || 0;
+
+  const handleNotificationClick = (notification: Notification) => {
+    if (!notification.isRead) {
+      markReadMutation.mutate(notification.id);
+    }
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -75,9 +91,17 @@ export function Header() {
                 <DropdownMenuContent align="start" className="w-80">
                   {notifications && notifications.length > 0 ? (
                     notifications.slice(0, 5).map((notification) => (
-                      <DropdownMenuItem key={notification.id} className="flex flex-col items-start gap-1 py-3">
+                      <DropdownMenuItem 
+                        key={notification.id} 
+                        className="flex flex-col items-start gap-1 py-3 cursor-pointer"
+                        onClick={() => handleNotificationClick(notification)}
+                        data-testid={`notification-item-${notification.id}`}
+                      >
                         <div className="font-semibold text-sm">{notification.title}</div>
                         <div className="text-xs text-muted-foreground">{notification.message}</div>
+                        {!notification.isRead && (
+                          <div className="mt-1 h-2 w-2 rounded-full bg-destructive" data-testid={`notification-unread-indicator-${notification.id}`}></div>
+                        )}
                       </DropdownMenuItem>
                     ))
                   ) : (
