@@ -297,10 +297,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Country not found" });
       }
 
-      if (user.credits < 5) {
-        return res.status(400).json({ message: "Insufficient credits. You need 5 credits to use a number." });
-      }
-
       // Parse numbers from file
       const numbers = country.numbersFile.split('\n').filter(n => n.trim());
       
@@ -310,11 +306,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Get a random number
       const randomNumber = numbers[Math.floor(Math.random() * numbers.length)];
-
-      // Deduct credits
-      await storage.updateUser(user.id, {
-        credits: user.credits - 5,
-      });
 
       // Update country usage
       await storage.updateCountry(country.id, {
@@ -349,6 +340,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/sms/check/:phoneNumber", requireAuth, smsLimiter, async (req: Request, res: Response) => {
     try {
+      const user = req.user!;
       const phoneNumber = req.params.phoneNumber;
       const apiToken = await storage.getSetting("sms_api_token");
 
@@ -392,6 +384,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
         if (i === 0) {
           await new Promise(resolve => setTimeout(resolve, 1000));
         }
+      }
+
+      // Deduct 5 credits only if messages were found
+      if (newMessages > 0) {
+        if (user.credits < 5) {
+          return res.status(400).json({ message: "Insufficient credits to receive SMS. You need 5 credits." });
+        }
+
+        await storage.updateUser(user.id, {
+          credits: user.credits - 5,
+        });
+
+        // Create wallet transaction record for SMS receipt
+        await storage.createWalletTransaction({
+          userId: user.id,
+          type: "sms_charge",
+          amount: -5,
+          description: `SMS received on ${phoneNumber}`,
+          status: "completed",
+        });
       }
 
       res.json({ newMessages });

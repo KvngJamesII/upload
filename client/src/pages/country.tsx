@@ -32,9 +32,9 @@ export default function CountryPage() {
 
   const getNumberMutation = useMutation({
     mutationFn: async () => {
-      return await apiRequest<{ number: string }>("POST", `/api/countries/${countryId}/use-number`, {});
+      return await apiRequest("POST", `/api/countries/${countryId}/use-number`, {}) as Promise<{ number: string }>;
     },
-    onSuccess: (data) => {
+    onSuccess: (data: { number: string }) => {
       setCurrentNumber(data.number);
       queryClient.invalidateQueries({ queryKey: ["/api/auth/me"] });
       queryClient.invalidateQueries({ queryKey: ["/api/countries", countryId] });
@@ -50,14 +50,15 @@ export default function CountryPage() {
 
   const checkSmsMutation = useMutation({
     mutationFn: async () => {
-      return await apiRequest<{ newMessages: number }>("POST", `/api/sms/check/${currentNumber}`, {});
+      return await apiRequest("POST", `/api/sms/check/${currentNumber}`, {}) as Promise<{ newMessages: number }>;
     },
-    onSuccess: (data) => {
+    onSuccess: (data: { newMessages: number }) => {
       if (data.newMessages > 0) {
         toast({
           title: "New SMS Received!",
           description: `${data.newMessages} new message(s) received`,
         });
+        queryClient.invalidateQueries({ queryKey: ["/api/auth/me"] });
         refetchSms();
       } else {
         toast({
@@ -151,7 +152,7 @@ export default function CountryPage() {
                     size="lg"
                     data-testid="button-get-number"
                   >
-                    {getNumberMutation.isPending ? "Loading..." : "Get Number (5 Credits)"}
+                    {getNumberMutation.isPending ? "Loading..." : "Get Number (Free)"}
                   </Button>
                 </div>
               )}

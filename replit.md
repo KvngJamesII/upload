@@ -172,8 +172,40 @@ All admin features are fully implemented and working:
 - **Statistics**: Dashboard with usage analytics (working)
 - **Countries**: Upload numbers, manage pools (working)
 
+### 4. Country Numbers & SMS System Implementation
+Complete workflow for users to receive SMS on virtual numbers:
+
+**Getting a Number**:
+- Users navigate to a country card and click to view the country detail page
+- Click "Get Number (Free)" to receive a random number from that country's pool
+- Click "Next Number" to get another random number
+- Numbers are tracked in user history
+
+**SMS Management**:
+- SMS tab displays all messages received on the current number
+- Users can click "Check New SMS" to query the SMS API for new messages
+- System calls external SMS API to fetch incoming SMS messages
+- Only NEW messages are stored (duplicates filtered by sender + content)
+- Auto-refresh toggle refreshes SMS every 10 seconds automatically
+
+**Credit Deduction System**:
+- Getting a number: **FREE** (no credits deducted)
+- Checking SMS: **FREE** (no credits deducted)  
+- Receiving SMS: **5 credits deducted** (only when new SMS messages are found)
+- If user has insufficient credits when SMS arrives, error is shown
+- All SMS charges are tracked in wallet transactions
+
+**Key Features**:
+- Auto-refresh SMS check with configurable interval (10 seconds)
+- Visual indicator with sender and timestamp for each message
+- Number usage tracked in user history
+- SMS messages stored with phone number for future reference
+- Rate limiting on number retrieval (10 req/min) and SMS checks (5 req/min)
+
 ### Important Notes for Testing
 - To test admin functionality: **Log in as admin** (username: idledev, password: 200715)
 - All endpoints require admin authentication via `requireAdmin` middleware
 - Session-based authentication persists across navigation
 - Admin panel data auto-refreshes via React Query cache invalidation
+- SMS API token must be configured in admin panel for SMS checking to work
+- Users need sufficient credits (5) to receive SMS when messages arrive
