@@ -1,27 +1,47 @@
-import fs from "node:fs";
-import path from "node:path";
-import { type Server } from "node:http";
-
 import dotenv from "dotenv";
-import express, { type Express } from "express";
+import express from "express";
 import runApp from "./app";
 
 dotenv.config();
 
-export async function serveStatic(app: Express, _server: Server) {
-  const distPath = path.resolve(import.meta.dirname, "public");
+// Backend-only mode: No static file serving
+// Frontend is deployed separately on Vercel
+export async function serveStatic(app: express.Express, _server: any) {
+  // Add CORS headers for frontend on Vercel
+  app.use((req, res, next) => {
+    const origin = req.headers.origin;
+    
+    // Allow requests from your Vercel frontend and localhost (for development)
+    const allowedOrigins = [
+      "http://localhost:3000",
+      "http://localhost:5000",
+      "https://localhost:3000",
+      "https://localhost:5000",
+    ];
+    
+    if (!origin || allowedOrigins.includes(origin) || origin?.includes("vercel.app")) {
+      res.header("Access-Control-Allow-Origin", origin || "*");
+      res.header("Access-Control-Allow-Credentials", "true");
+      res.header(
+        "Access-Control-Allow-Methods",
+        "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS"
+      );
+      res.header(
+        "Access-Control-Allow-Headers",
+        "Content-Type,Authorization"
+      );
+    }
+    
+    if (req.method === "OPTIONS") {
+      return res.sendStatus(200);
+    }
+    
+    next();
+  });
 
-  if (!fs.existsSync(distPath)) {
-    throw new Error(
-      `Could not find the build directory: ${distPath}, make sure to build the client first`,
-    );
-  }
-
-  app.use(express.static(distPath));
-
-  // fall through to index.html if the file doesn't exist
-  app.use("*", (_req, res) => {
-    res.sendFile(path.resolve(distPath, "index.html"));
+  // Health check endpoint
+  app.get("/health", (_req, res) => {
+    res.json({ status: "ok", message: "Backend is running!" });
   });
 }
 

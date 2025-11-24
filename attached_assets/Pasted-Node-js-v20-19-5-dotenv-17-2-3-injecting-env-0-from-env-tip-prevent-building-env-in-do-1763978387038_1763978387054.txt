@@ -1,0 +1,84 @@
+Node.js v20.19.5
+[dotenv@17.2.3] injecting env (0) from .env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+/app/server/index-prod.ts:15
+Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+    throw new Error(
+memory, and will not scale past a single process.
+          ^
+Error: Could not find the build directory: /app/server/public, make sure to build the client first
+npm warn config production Use `--omit=dev` instead.
+> otp-king-backend@1.0.0 start
+> NODE_ENV=production tsx server/index-prod.ts
+[dotenv@17.2.3] injecting env (0) from .env -- tip: 🔑 add access controls to secrets: https://dotenvx.com/ops
+Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+/app/server/index-prod.ts:15
+    throw new Error(
+          ^
+Error: Could not find the build directory: /app/server/public, make sure to build the client first
+    at serveStatic (/app/server/index-prod.ts:15:11)
+    at runApp (/app/server/app.ts:82:9)
+    at async <anonymous> (/app/server/index-prod.ts:29:3)
+Node.js v20.19.5
+npm warn config production Use `--omit=dev` instead.
+> otp-king-backend@1.0.0 start
+> NODE_ENV=production tsx server/index-prod.ts
+[dotenv@17.2.3] injecting env (0) from .env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+/app/server/index-prod.ts:15
+    throw new Error(
+          ^
+Error: Could not find the build directory: /app/server/public, make sure to build the client first
+    at serveStatic (/app/server/index-prod.ts:15:11)
+    at runApp (/app/server/app.ts:82:9)
+    at async <anonymous> (/app/server/index-prod.ts:29:3)
+Node.js v20.19.5
+npm warn config production Use `--omit=dev` instead.
+> otp-king-backend@1.0.0 start
+> NODE_ENV=production tsx server/index-prod.ts
+[dotenv@17.2.3] injecting env (0) from .env -- tip: 👥 sync secrets across teammates & machines: https://dotenvx.com/ops
+Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+/app/server/index-prod.ts:15
+    throw new Error(
+          ^
+Error: Could not find the build directory: /app/server/public, make sure to build the client first
+    at serveStatic (/app/server/index-prod.ts:15:11)
+    at runApp (/app/server/app.ts:82:9)
+    at async <anonymous> (/app/server/index-prod.ts:29:3)
+Node.js v20.19.5
+npm warn config production Use `--omit=dev` instead.
+> otp-king-backend@1.0.0 start
+> NODE_ENV=production tsx server/index-prod.ts
+[dotenv@17.2.3] injecting env (0) from .env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+/app/server/index-prod.ts:15
+    throw new Error(
+          ^
+Error: Could not find the build directory: /app/server/public, make sure to build the client first
+    at serveStatic (/app/server/index-prod.ts:15:11)
+    at runApp (/app/server/app.ts:82:9)
+    at async <anonymous> (/app/server/index-prod.ts:29:3)
+Node.js v20.19.5
+> otp-king-backend@1.0.0 start
+> NODE_ENV=production tsx server/index-prod.ts
+npm warn config production Use `--omit=dev` instead.
+memory, and will not scale past a single process.
+          ^
+/app/server/index-prod.ts:15
+    throw new Error(
+Error: Could not find the build directory: /app/server/public, make sure to build the client first
+    at serveStatic (/app/server/index-prod.ts:15:11)
+    at runApp (/app/server/app.ts:82:9)
+[dotenv@17.2.3] injecting env (0) from .env -- tip: ⚙️  suppress all logs with { quiet: true }
+    at async <anonymous> (/app/server/index-prod.ts:29:3)
+Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+Node.js v20.19.5
