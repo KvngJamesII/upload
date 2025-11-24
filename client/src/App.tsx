@@ -97,7 +97,7 @@ function Router() {
       </Route>
       
       {/* Admin Routes */}
-      <Route path="/admin/:rest*">
+      <Route path="/admin*">
         {() => (
           <AuthWrapper>
             <Admin />
