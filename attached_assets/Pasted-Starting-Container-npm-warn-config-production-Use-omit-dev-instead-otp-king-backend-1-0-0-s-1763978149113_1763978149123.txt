@@ -1,0 +1,86 @@
+Starting Container
+npm warn config production Use `--omit=dev` instead.
+> otp-king-backend@1.0.0 start
+> NODE_ENV=production node --require dotenv/config --loader tsx/esm server/index-prod.ts
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+Error: tsx must be loaded with --import instead of --loader
+The --loader flag was deprecated in Node v20.6.0 and v18.19.0
+    at initialize (file:///app/node_modules/tsx/dist/esm/index.mjs:1:985)
+    at Hooks.addCustomLoader (node:internal/modules/esm/hooks:206:24)
+    at Hooks.register (node:internal/modules/esm/hooks:172:16)
+    at async initializeHooks (node:internal/modules/esm/utils:324:5)
+    at async customizedModuleWorker (node:internal/modules/esm/worker:104:24)
+Node.js v20.19.5
+npm warn config production Use `--omit=dev` instead.
+> otp-king-backend@1.0.0 start
+> NODE_ENV=production node --require dotenv/config --loader tsx/esm server/index-prod.ts
+node:internal/modules/run_main:123
+    at async customizedModuleWorker (node:internal/modules/esm/worker:104:24)
+    triggerUncaughtException(
+Node.js v20.19.5
+    ^
+Error: tsx must be loaded with --import instead of --loader
+The --loader flag was deprecated in Node v20.6.0 and v18.19.0
+    at initialize (file:///app/node_modules/tsx/dist/esm/index.mjs:1:985)
+    at Hooks.addCustomLoader (node:internal/modules/esm/hooks:206:24)
+    at Hooks.register (node:internal/modules/esm/hooks:172:16)
+    at async initializeHooks (node:internal/modules/esm/utils:324:5)
+npm warn config production Use `--omit=dev` instead.
+> otp-king-backend@1.0.0 start
+> NODE_ENV=production node --require dotenv/config --loader tsx/esm server/index-prod.ts
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+Error: tsx must be loaded with --import instead of --loader
+The --loader flag was deprecated in Node v20.6.0 and v18.19.0
+    at initialize (file:///app/node_modules/tsx/dist/esm/index.mjs:1:985)
+    at Hooks.addCustomLoader (node:internal/modules/esm/hooks:206:24)
+    at Hooks.register (node:internal/modules/esm/hooks:172:16)
+    at async initializeHooks (node:internal/modules/esm/utils:324:5)
+    at async customizedModuleWorker (node:internal/modules/esm/worker:104:24)
+Node.js v20.19.5
+npm warn config production Use `--omit=dev` instead.
+> otp-king-backend@1.0.0 start
+> NODE_ENV=production node --require dotenv/config --loader tsx/esm server/index-prod.ts
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+Error: tsx must be loaded with --import instead of --loader
+The --loader flag was deprecated in Node v20.6.0 and v18.19.0
+    at initialize (file:///app/node_modules/tsx/dist/esm/index.mjs:1:985)
+    at Hooks.addCustomLoader (node:internal/modules/esm/hooks:206:24)
+    at Hooks.register (node:internal/modules/esm/hooks:172:16)
+    at async initializeHooks (node:internal/modules/esm/utils:324:5)
+    at async customizedModuleWorker (node:internal/modules/esm/worker:104:24)
+Node.js v20.19.5
+npm warn config production Use `--omit=dev` instead.
+> otp-king-backend@1.0.0 start
+> NODE_ENV=production node --require dotenv/config --loader tsx/esm server/index-prod.ts
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+Error: tsx must be loaded with --import instead of --loader
+The --loader flag was deprecated in Node v20.6.0 and v18.19.0
+    at initialize (file:///app/node_modules/tsx/dist/esm/index.mjs:1:985)
+    at Hooks.addCustomLoader (node:internal/modules/esm/hooks:206:24)
+    at Hooks.register (node:internal/modules/esm/hooks:172:16)
+    at async initializeHooks (node:internal/modules/esm/utils:324:5)
+    at async customizedModuleWorker (node:internal/modules/esm/worker:104:24)
+Node.js v20.19.5
+npm warn config production Use `--omit=dev` instead.
+> otp-king-backend@1.0.0 start
+> NODE_ENV=production node --require dotenv/config --loader tsx/esm server/index-prod.ts
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+Error: tsx must be loaded with --import instead of --loader
+The --loader flag was deprecated in Node v20.6.0 and v18.19.0
+    at initialize (file:///app/node_modules/tsx/dist/esm/index.mjs:1:985)
+    at Hooks.addCustomLoader (node:internal/modules/esm/hooks:206:24)
+    at Hooks.register (node:internal/modules/esm/hooks:172:16)
+    at async initializeHooks (node:internal/modules/esm/utils:324:5)
+    at async customizedModuleWorker (node:internal/modules/esm/worker:104:24)
+Node.js v20.19.5
+npm warn config production Use `--omit=dev` instead.
