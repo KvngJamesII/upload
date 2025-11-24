@@ -6,6 +6,7 @@ import {
   announcements,
   notifications,
   settings,
+  walletTransactions,
   type User, 
   type InsertUser,
   type Country,
@@ -20,6 +21,8 @@ import {
   type InsertNotification,
   type Setting,
   type InsertSetting,
+  type WalletTransaction,
+  type InsertWalletTransaction,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, sql } from "drizzle-orm";
@@ -64,6 +67,11 @@ export interface IStorage {
   // Settings methods
   getSetting(key: string): Promise<Setting | undefined>;
   setSetting(setting: InsertSetting): Promise<Setting>;
+  
+  // Wallet methods
+  getUserWallet(userId: string): Promise<WalletTransaction[]>;
+  createWalletTransaction(transaction: InsertWalletTransaction): Promise<WalletTransaction>;
+  getWalletStats(): Promise<{ totalTransactions: number; totalPurchased: number }>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -200,6 +208,25 @@ export class DatabaseStorage implements IStorage {
       const [setting] = await db.insert(settings).values(insertSetting).returning();
       return setting;
     }
+  }
+
+  // Wallet methods
+  async getUserWallet(userId: string): Promise<WalletTransaction[]> {
+    return await db.select().from(walletTransactions).where(eq(walletTransactions.userId, userId)).orderBy(desc(walletTransactions.createdAt));
+  }
+
+  async createWalletTransaction(transaction: InsertWalletTransaction): Promise<WalletTransaction> {
+    const [result] = await db.insert(walletTransactions).values(transaction).returning();
+    return result;
+  }
+
+  async getWalletStats(): Promise<{ totalTransactions: number; totalPurchased: number }> {
+    const transactions = await db.select().from(walletTransactions);
+    const purchases = transactions.filter(t => t.type === 'purchase' && t.status === 'completed');
+    return {
+      totalTransactions: transactions.length,
+      totalPurchased: purchases.reduce((sum, t) => sum + t.amount, 0),
+    };
   }
 }
 

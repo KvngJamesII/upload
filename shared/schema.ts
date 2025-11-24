@@ -71,6 +71,18 @@ export const notifications = pgTable("notifications", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
+// Wallet transactions
+export const walletTransactions = pgTable("wallet_transactions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  type: text("type").notNull(), // 'purchase', 'referral', 'admin', 'usage'
+  amount: integer("amount").notNull(),
+  description: text("description").notNull(),
+  status: text("status").notNull().default("completed"), // 'pending', 'completed', 'failed'
+  transactionId: text("transaction_id"), // For payment processing
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
 // System settings
 export const settings = pgTable("settings", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -82,6 +94,7 @@ export const settings = pgTable("settings", {
 export const usersRelations = relations(users, ({ many }) => ({
   numberHistory: many(numberHistory),
   notifications: many(notifications),
+  walletTransactions: many(walletTransactions),
 }));
 
 export const countriesRelations = relations(countries, ({ many }) => ({
@@ -102,6 +115,13 @@ export const numberHistoryRelations = relations(numberHistory, ({ one }) => ({
 export const notificationsRelations = relations(notifications, ({ one }) => ({
   user: one(users, {
     fields: [notifications.userId],
+    references: [users.id],
+  }),
+}));
+
+export const walletTransactionsRelations = relations(walletTransactions, ({ one }) => ({
+  user: one(users, {
+    fields: [walletTransactions.userId],
     references: [users.id],
   }),
 }));
@@ -148,9 +168,16 @@ export const insertSettingSchema = createInsertSchema(settings).omit({
   id: true,
 });
 
+export const insertWalletTransactionSchema = createInsertSchema(walletTransactions).omit({
+  id: true,
+  createdAt: true,
+});
+
 // Types
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
+export type WalletTransaction = typeof walletTransactions.$inferSelect;
+export type InsertWalletTransaction = z.infer<typeof insertWalletTransactionSchema>;
 
 export type InsertCountry = z.infer<typeof insertCountrySchema>;
 export type Country = typeof countries.$inferSelect;
