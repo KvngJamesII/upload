@@ -58,29 +58,46 @@ export default function Wallet() {
   });
 
   const handlePaystack = (amount: number) => {
-    const handler = (window as any).PaystackPop.setup({
-      key: import.meta.env.VITE_PAYSTACK_KEY,
-      email: user?.email || "user@example.com",
-      amount: amount * 100,
-      ref: `${Date.now()}`,
-      onClose: () => {
-        toast({ title: "Payment cancelled" });
-      },
-      onSuccess: (response: any) => {
-        paystackMutation.mutate(response.reference);
-      },
-    });
-    handler.openIframe();
+    if (!(window as any).PaystackPop) {
+      toast({ 
+        title: "Error", 
+        description: "Payment system is not loaded. Please refresh and try again.", 
+        variant: "destructive" 
+      });
+      return;
+    }
+    
+    try {
+      const handler = (window as any).PaystackPop.setup({
+        key: import.meta.env.VITE_PAYSTACK_KEY,
+        email: user?.email || "user@example.com",
+        amount: amount * 100,
+        ref: `${Date.now()}`,
+        onClose: () => {
+          toast({ title: "Payment cancelled" });
+        },
+        onSuccess: (response: any) => {
+          paystackMutation.mutate(response.reference);
+        },
+      });
+      handler.openIframe();
+    } catch (error) {
+      toast({ 
+        title: "Error", 
+        description: "Failed to open payment form. Please try again.", 
+        variant: "destructive" 
+      });
+    }
   };
 
   // Use pricing tiers from admin panel
-  const pricingTiers = pricing?.pricingTiers || [
+  const pricingTiers: Array<{ credits: number; naira: number }> = (pricing as any)?.pricingTiers || [
     { credits: 100, naira: 100 },
     { credits: 500, naira: 450 },
     { credits: 1000, naira: 800 },
   ];
   
-  const packages = pricingTiers.map((tier) => ({
+  const packages: Array<{ credits: number; price: number }> = pricingTiers.map((tier: { credits: number; naira: number }) => ({
     credits: tier.credits,
     price: tier.naira,
   }));
@@ -141,7 +158,7 @@ export default function Wallet() {
               <div>
                 <h2 className="text-2xl font-bold mb-4">Buy Credits</h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {packages.map((pkg) => {
+                  {packages.map((pkg: { credits: number; price: number }) => {
                     const pricePerCredit = (pkg.price / pkg.credits).toFixed(2);
                     return (
                       <Card key={pkg.credits} className="hover-elevate cursor-pointer">
@@ -172,7 +189,6 @@ export default function Wallet() {
                   })}
                 </div>
               </div>
-              <script src="https://js.paystack.co/v1/inline.js" async></script>
             </TabsContent>
 
             {/* Gift Code Tab */}
