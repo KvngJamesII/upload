@@ -1,0 +1,146 @@
+I need you to code a website, that has both html frontend and node.js backend, let's call it otp king, now the frontend has the homepage and the admin panel, now when a user logs in with the detail, Username (idledev) password (200715) he'll be taken to the admin panel, here he can see thing like statistics, the admin panel is arranged neatly into different tabs, there is the numbers tab showing country numbers available on the website, and there is a upload number button, when clicked, I'll be asked to upload the number txt file, after uploading, it'll be saved, then I'll be asked to select the country from a selector stuff, the list will consist of all countries with their name, flag and country code, after selecting and clicking done, I'll get a confirmation message saying "Publish (amount of numbers in the txt) (country) Numbers e.g Publish 5000 American Numbers, now when I click publish, it'll be published to the page for users to use.
+
+And I'll be able to see the number details in the numbers tab like if it's the first number I'm uploading
+
+#1: American Number
+5000 Numbers
+Used 0/5000 (shows how many of the numbers users have used)
+Then a delete button 🔘
+
+The next tab is the API tab where I will input my API token for my sms panel that will connect to my backend and send sms to my frontend. I'm doing it like that cus the API is subject to change.
+
+Now, ther is also the user tab where I can see user details, new users, most active users (using numbers the most), and many more details and I can ban and unban users.
+
+There is also a notification tab where I can use to send notifications to all users.
+And the statistics tab showing, the users chart, numbers users chart, most country being used and other details, add a maintaenace button, when toggled on, all user will see a maintenance page and won't be able to access any page except login and signup page, but if admin details is inuputted in login, he'll be taken to admin panel, maintaenace does not affect him, add other features to the admin panel too to make it topnotch .
+
+Now the homepage, after user signs up or login successfully, there is the "OTP King" caption at the top center, at the top left is the profile icon button and next to it is the notification bell that will show a red badge when there's a new notification, and at the top right is the Credit indicator showing Credit: 100. All new users get 100 credits on signup. when they login daily/visit the site daily they get 50 credits, not that it isnt automatic, its only when the user opens the site for that day then he gets it. now next to the credit indicator is a wallet icon, when clicked. itll take the user to the wallet page and the wallet page will show the user credits, and then there is a Buy tab showing Purchase 1000 Credits for N1000, when clicked, itll load paystack stuff to accept payment from the user, and then when confirmed, the user will be credited with the credits, not that the amount of credit and price in naira is subject to change by the admin in the admin panel. Then the next tab in the wallet page is the promo code tab where user enter promo code to claim credits, code are generated fromadmin panel too, and then below that is the referral tab where user can get referral links to invite friends and they will get 100 credit per referral.  Add a credits tab to the admin panel where the admin can enter a username, and click gift and enter the amount of credit and gift him, the admin can set price of credit for deposit, amount of credit for deposit, amount per referral, he can create a promo code and set how many users to claim and set expirity date or time and can delete an active promo code and many more features.
+
+Now back to user homepage, below the header is a moving banner like those moving news headlines stuff on tv, so I use that to make announcements from admin panel in the admin announcement tab and admin can delete or edit announcements.
+
+Now below that is the main content, now let's call it country hover card, each hover card is just two per line and the background of image a hover card is the country numbers flag image, make it blurred so that the text can be visible, then the text is the country name inscription, below it, is the country code and then the amount of numbers in the txt.
+
+The hover card is always arranged by newest first,
+
+Now when a hover card is clicked, user will be taken to that country page.
+
+Now the page will display the normal tops otpking, profile, noti blabla, those headers will always display on all page.
+
+So now, the page will consist of a number at the center of the page, (selected randomly from the country txt file)
+
+And then a next button below, to switch to the next button and then below that, is the sms tab to show the recent SMS for that number. When a message is received for a number it's save din that number sms tab, each sms is delivered like this
+
+(sender)
+And
+(Message)
+And
+(Date)
+
+On the sms tab there is a check for New SMS button, when the user clicks it, a loading or spinner stuff will appear on the tab and the backend will check the panel for any SMS Received for exactly that number, it'll check it twice and if now sms received it'll show No New SMS found, if received, it'll show New SMS Received and display it in the sms tab, below the header of a country page there is a back button at the left to take the user back to the homepage and there is a history icon button at the right so when user clicks it he can see the recent numbers he used
+
+these are some features i want you to add too  1. Rate Limiting Per User
+
+Stops users from abusing the “Next Number” or “Check SMS” buttons.     Dark / Light Mode Switch
+
+Users can toggle UI theme.
+
+Looks modern and people love customization.
+
+
+---
+
+✅ 7. Search & Filter on Homepage
+
+Allow users to search for:
+
+Country name  You can also add filters like:
+
+“Most Used”
+
+“Newest”
+
+“Most Numbers Available”                   SMS Auto Refresh Mode
+
+A switch that lets SMS tab auto-refresh every X seconds.
+
+User doesn’t have to spam "Check New SMS".  In-App Chat Support
+
+User can chat with admin or support directly from the app.
+
+Messages show in admin panel support tab.       Note that the signup form will include, username, password and referral code, the referral code input i'snt compulsory, also add an ip multiple account blocker, a strict one to prevent fake referrals and multiple accounts.          now here are the details you will be using. Use postegrl stuff for database and auth stuff, im going to be deploying on railway and i dont want any data to be lost when i make changes or update to codes after deploying. This is the paystack public API for payment,     pk_live_efa6b01e6086e21bda6762026dcaec02dd4f669a             this is the api for sms panel, it can be chaged in admin panel, QlZSNEVBcHJHbIuGSoxYZVZlk4iFamd1U2lYU0iLk4hfjnFCSXA=                               this is the sms api documentation, CR API Guide for Data Retrieval
+API URL : http://51.77.216.195/crapi/dgroup/viewstats
+Supports both post and get parameters.
+Requirements:
+token: you need to send token to authorize your API requests. You can get token for 
+your account from your Administrator.
+Parameters:
+Parameter Type 
+(Req/Optional) 
+Format Description 
+token string (Required) hYuwoskkkaw28kss
+x== 
+Token is to 
+authorize your API 
+Request. 
+dt1 datetime (Optional) yyyy-mm-dd 
+HH:ii:ss 
+Date Start 
+dt2 datetime (Optional) yyyy-mm-dd 
+HH:ii:ss 
+Date End 
+records Integer (Optional) 10 Number of records 
+you want to fetch, 
+Max value is 200 
+filternum string (Optional) 44123456678 You can search a 
+specific number 
+using this 
+parameter 
+filtercli string (Optional) Google You can search a 
+specific 
+CLI/SenderID using 
+this parameter. 
+Example URL you have to call:
+http://51.77.216.195/crapi/dgroup/viewstats?token=%3Creplace_your_token%3E&dt1=2025-03-
+16%2011:00:00&dt2=2025-03-18%20%2010:00:00&records=25
+Sample Success Output 
+Output will be in json format. 
+{
+ "status": "success",
+ "total": 25,
+ "data": [
+ {
+ "dt": "2025-03-16 21:38:27",
+ "num": "84966570308",
+ "cli": "msverify",
+ "message": "Use verification code 705516 for Via Benefits authentication",
+ "payout": "0.01"
+ },
+ {
+ "dt": "2025-03-16 21:38:26",
+ "num": "84966570308",
+ "cli": "msverify",
+ "message": "Use verification code 728840 for Via Benefits authentication",
+ "payout": "0.01"
+ },
+ {
+ "dt": "2025-03-16 21:38:25",
+ "num": "84375660463",
+ "cli": "msverify",
+ "message": "Use verification code 838841 for Via Benefits authentication",
+ "payout": "0.01"
+ },
+ 
+}
+Status value will be returned success in case there is data available for your request. 
+Sample Error Output 
+{ 
+"status": "error", 
+"msg": "Not Authorized" 
+} 
+In case of error, it returns status as error. 
+And in msg you can get the cause of error       
+
+We'll use supabase for database, this is the transaction pooler stuff, postgresql://postgres.wmexjnwdfwegodysvzog:isr828u2@aws-1-eu-north-1.pooler.supabase.com:6543/postgres 
+
+
+Please focus well on the pages design, both the admin age, profile page, homepage, signup page and so on. i want a professional design
