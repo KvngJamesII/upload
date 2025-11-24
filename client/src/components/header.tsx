@@ -1,4 +1,4 @@
-import { Bell, User, Smartphone, Gem } from "lucide-react";
+import { Bell, User, Smartphone, Gem, Wallet } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ThemeToggle } from "./theme-toggle";
@@ -109,14 +109,23 @@ export function Header() {
         {/* Right: Credits/SignUp and Theme Toggle */}
         <div className="flex items-center gap-2">
           {user ? (
-            <Badge 
-              variant="secondary" 
-              className="px-4 py-2 font-mono text-sm font-semibold bg-gradient-to-r from-primary/10 to-accent/10 border-primary/20 flex items-center gap-1.5"
-              data-testid="badge-credits"
-            >
-              <Gem className="h-3.5 w-3.5" />
-              {user.credits ?? 0} Credits
-            </Badge>
+            <>
+              <Link href="/wallet">
+                <Badge 
+                  variant="secondary" 
+                  className="px-4 py-2 font-mono text-sm font-semibold bg-gradient-to-r from-primary/10 to-accent/10 border-primary/20 flex items-center gap-1.5 cursor-pointer hover-elevate"
+                  data-testid="badge-credits"
+                >
+                  <Gem className="h-3.5 w-3.5" />
+                  {user.credits ?? 0} Credits
+                </Badge>
+              </Link>
+              <Link href="/wallet">
+                <Button variant="ghost" size="icon" className="relative" data-testid="button-wallet">
+                  <Wallet className="h-5 w-5" />
+                </Button>
+              </Link>
+            </>
           ) : (
             <Link href="/signup">
               <Button className="bg-gradient-to-r from-primary to-secondary hover:opacity-90" data-testid="button-signup">

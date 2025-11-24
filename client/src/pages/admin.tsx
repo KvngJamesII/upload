@@ -8,6 +8,8 @@ import { ApiSettingsTab } from "./admin/api-settings";
 import { UsersTab } from "./admin/users";
 import { NotificationsTab } from "./admin/notifications";
 import { AnnouncementsTab } from "./admin/announcements";
+import { WalletTab } from "./admin/wallet";
+import { GiftCodesTab } from "./admin/giftcodes";
 
 export default function Admin() {
   const style = {
@@ -32,6 +34,8 @@ export default function Admin() {
               <Route path="/admin/users" component={UsersTab} />
               <Route path="/admin/notifications" component={NotificationsTab} />
               <Route path="/admin/announcements" component={AnnouncementsTab} />
+              <Route path="/admin/wallet" component={WalletTab} />
+              <Route path="/admin/giftcodes" component={GiftCodesTab} />
             </Switch>
           </main>
         </div>

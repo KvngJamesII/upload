@@ -15,6 +15,10 @@ localPort = 5000
 externalPort = 80
 
 [[ports]]
+localPort = 40685
+externalPort = 3001
+
+[[ports]]
 localPort = 43293
 externalPort = 3000
 
@@ -44,3 +48,9 @@ waitForPort = 5000
 
 [agent]
 integrations = ["javascript_database:1.0.0"]
+
+[userenv]
+
+[userenv.shared]
+VITE_PAYSTACK_KEY = "pk_live_efa6b01e6086e21bda6762026dcaec02dd4f669a"
+PAYSTACK_KEY = "pk_live_efa6b01e6086e21bda6762026dcaec02dd4f669a"

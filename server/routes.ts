@@ -680,6 +680,151 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Wallet Routes
+  app.get("/api/wallet/transactions", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const transactions = await storage.getUserWallet(req.user!.id);
+      res.json(transactions);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.get("/api/wallet/pricing", async (req: Request, res: Response) => {
+    try {
+      const creditPrice = await storage.getSetting("credit_price");
+      res.json({ 
+        creditPrice: creditPrice ? parseFloat(creditPrice.value) : 1 
+      });
+    } catch (error: any) {
+      res.json({ creditPrice: 1 });
+    }
+  });
+
+  app.post("/api/wallet/verify-payment", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const { reference } = req.body;
+      const user = req.user!;
+
+      // Verify with Paystack
+      const response = await axios.get(`https://api.paystack.co/transaction/verify/${reference}`, {
+        headers: { Authorization: `Bearer ${process.env.PAYSTACK_KEY}` },
+      });
+
+      if (response.data.status && response.data.data.status === "success") {
+        const amount = Math.floor(response.data.data.amount / 100); // Convert from kobo
+        const creditPrice = await storage.getSetting("credit_price");
+        const pricePerCredit = creditPrice ? parseFloat(creditPrice.value) : 1;
+        const credits = Math.floor(amount / pricePerCredit);
+
+        // Update user credits
+        await storage.updateUser(user.id, {
+          credits: user.credits + credits,
+        });
+
+        // Create transaction record
+        await storage.createWalletTransaction({
+          userId: user.id,
+          type: "purchase",
+          amount: credits,
+          description: `Paystack purchase (Ref: ${reference})`,
+          status: "completed",
+          transactionId: reference,
+        });
+
+        res.json({ success: true, creditsAdded: credits });
+      } else {
+        res.status(400).json({ message: "Payment not successful" });
+      }
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.post("/api/wallet/claim-giftcode", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const { code } = req.body;
+      const result = await storage.claimGiftCode(code, req.user!.id);
+
+      if (result.success) {
+        res.json(result);
+      } else {
+        res.status(400).json({ message: "Invalid, expired, or exhausted gift code" });
+      }
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Admin Wallet Routes
+  app.get("/api/admin/wallet/stats", requireAdmin, async (req: Request, res: Response) => {
+    try {
+      const stats = await storage.getWalletStats();
+      const pricing = await storage.getSetting("credit_price");
+      res.json({
+        ...stats,
+        creditPrice: pricing ? parseFloat(pricing.value) : 1,
+      });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.post("/api/admin/wallet/pricing", requireAdmin, async (req: Request, res: Response) => {
+    try {
+      const { creditPrice } = req.body;
+      await storage.setSetting({ key: "credit_price", value: creditPrice.toString() });
+      res.json({ success: true });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Gift Code Routes
+  app.get("/api/admin/giftcodes", requireAdmin, async (req: Request, res: Response) => {
+    try {
+      const giftcodes = await storage.getAllGiftCodes();
+      res.json(giftcodes);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.post("/api/admin/giftcodes", requireAdmin, async (req: Request, res: Response) => {
+    try {
+      const { code, creditsAmount, maxClaims, expiryDate } = req.body;
+      const giftcode = await storage.createGiftCode({
+        code: code.toUpperCase(),
+        creditsAmount,
+        maxClaims,
+        expiryDate: new Date(expiryDate),
+        isActive: true,
+      });
+      res.json(giftcode);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.patch("/api/admin/giftcodes/:id/toggle", requireAdmin, async (req: Request, res: Response) => {
+    try {
+      const { isActive } = req.body;
+      await storage.updateGiftCode(req.params.id, { isActive });
+      res.json({ success: true });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.delete("/api/admin/giftcodes/:id", requireAdmin, async (req: Request, res: Response) => {
+    try {
+      await storage.deleteGiftCode(req.params.id);
+      res.json({ success: true });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
   // Create HTTP server
   const httpServer = createServer(app);
 

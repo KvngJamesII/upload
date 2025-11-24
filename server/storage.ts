@@ -7,6 +7,7 @@ import {
   notifications,
   settings,
   walletTransactions,
+  giftCodes,
   type User, 
   type InsertUser,
   type Country,
@@ -23,6 +24,8 @@ import {
   type InsertSetting,
   type WalletTransaction,
   type InsertWalletTransaction,
+  type GiftCode,
+  type InsertGiftCode,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, sql } from "drizzle-orm";
@@ -72,6 +75,14 @@ export interface IStorage {
   getUserWallet(userId: string): Promise<WalletTransaction[]>;
   createWalletTransaction(transaction: InsertWalletTransaction): Promise<WalletTransaction>;
   getWalletStats(): Promise<{ totalTransactions: number; totalPurchased: number }>;
+  
+  // Gift code methods
+  getGiftCode(code: string): Promise<GiftCode | undefined>;
+  getAllGiftCodes(): Promise<GiftCode[]>;
+  createGiftCode(giftCode: InsertGiftCode): Promise<GiftCode>;
+  updateGiftCode(id: string, data: Partial<GiftCode>): Promise<GiftCode | undefined>;
+  deleteGiftCode(id: string): Promise<void>;
+  claimGiftCode(code: string, userId: string): Promise<{ success: boolean; creditsAdded: number }>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -227,6 +238,58 @@ export class DatabaseStorage implements IStorage {
       totalTransactions: transactions.length,
       totalPurchased: purchases.reduce((sum, t) => sum + t.amount, 0),
     };
+  }
+
+  // Gift code methods
+  async getGiftCode(code: string): Promise<GiftCode | undefined> {
+    const [gift] = await db.select().from(giftCodes).where(eq(giftCodes.code, code));
+    return gift || undefined;
+  }
+
+  async getAllGiftCodes(): Promise<GiftCode[]> {
+    return await db.select().from(giftCodes).orderBy(desc(giftCodes.createdAt));
+  }
+
+  async createGiftCode(giftCode: InsertGiftCode): Promise<GiftCode> {
+    const [result] = await db.insert(giftCodes).values(giftCode).returning();
+    return result;
+  }
+
+  async updateGiftCode(id: string, data: Partial<GiftCode>): Promise<GiftCode | undefined> {
+    const [result] = await db.update(giftCodes).set(data).where(eq(giftCodes.id, id)).returning();
+    return result || undefined;
+  }
+
+  async deleteGiftCode(id: string): Promise<void> {
+    await db.delete(giftCodes).where(eq(giftCodes.id, id));
+  }
+
+  async claimGiftCode(code: string, userId: string): Promise<{ success: boolean; creditsAdded: number }> {
+    const gift = await this.getGiftCode(code);
+    if (!gift) return { success: false, creditsAdded: 0 };
+    if (!gift.isActive) return { success: false, creditsAdded: 0 };
+    if (gift.claimedCount >= gift.maxClaims) return { success: false, creditsAdded: 0 };
+    if (new Date(gift.expiryDate) < new Date()) return { success: false, creditsAdded: 0 };
+
+    const user = await this.getUser(userId);
+    if (!user) return { success: false, creditsAdded: 0 };
+
+    // Update user credits
+    await this.updateUser(userId, { credits: user.credits + gift.creditsAmount });
+
+    // Update gift code claim count
+    await this.updateGiftCode(gift.id, { claimedCount: gift.claimedCount + 1 });
+
+    // Create transaction record
+    await this.createWalletTransaction({
+      userId,
+      type: 'giftcode',
+      amount: gift.creditsAmount,
+      description: `Gift code claimed: ${code}`,
+      status: 'completed',
+    });
+
+    return { success: true, creditsAdded: gift.creditsAmount };
   }
 }
 

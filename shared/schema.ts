@@ -75,11 +75,23 @@ export const notifications = pgTable("notifications", {
 export const walletTransactions = pgTable("wallet_transactions", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
-  type: text("type").notNull(), // 'purchase', 'referral', 'admin', 'usage'
+  type: text("type").notNull(), // 'purchase', 'referral', 'admin', 'usage', 'giftcode'
   amount: integer("amount").notNull(),
   description: text("description").notNull(),
   status: text("status").notNull().default("completed"), // 'pending', 'completed', 'failed'
   transactionId: text("transaction_id"), // For payment processing
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+// Gift codes
+export const giftCodes = pgTable("gift_codes", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  code: text("code").notNull().unique(),
+  creditsAmount: integer("credits_amount").notNull(),
+  maxClaims: integer("max_claims").notNull(),
+  claimedCount: integer("claimed_count").notNull().default(0),
+  expiryDate: timestamp("expiry_date").notNull(),
+  isActive: boolean("is_active").notNull().default(true),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
@@ -124,6 +136,10 @@ export const walletTransactionsRelations = relations(walletTransactions, ({ one 
     fields: [walletTransactions.userId],
     references: [users.id],
   }),
+}));
+
+export const giftCodesRelations = relations(giftCodes, ({ many }) => ({
+  claims: many(walletTransactions),
 }));
 
 // Insert schemas
@@ -173,11 +189,19 @@ export const insertWalletTransactionSchema = createInsertSchema(walletTransactio
   createdAt: true,
 });
 
+export const insertGiftCodeSchema = createInsertSchema(giftCodes).omit({
+  id: true,
+  claimedCount: true,
+  createdAt: true,
+});
+
 // Types
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
 export type WalletTransaction = typeof walletTransactions.$inferSelect;
 export type InsertWalletTransaction = z.infer<typeof insertWalletTransactionSchema>;
+export type GiftCode = typeof giftCodes.$inferSelect;
+export type InsertGiftCode = z.infer<typeof insertGiftCodeSchema>;
 
 export type InsertCountry = z.infer<typeof insertCountrySchema>;
 export type Country = typeof countries.$inferSelect;
